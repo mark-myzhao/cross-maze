@@ -7,21 +7,58 @@ router.get('/', (req, res, next) => {
   res.render('main', { title: "cross-maze" })
 })
 
-// App ID: 9523850
-// API Key:
-// Secret Key:
+router.get('/test', (req, res, next) => {
+  res.sendFile('test/index.html')
+})
+
+router.get('/test1', (req, res, next) => {
+  res.sendFile('test1/record.html')
+})
 
 router.post('/speech', (req, res, next) => {
   // res.set('Content-Type', 'application/json')
+
+  let { blob, len, sampleRate } = req.body
+  // console.log('--------------------------')
+  // var data = {
+  //   'format': 'wav',
+  //   'rate': sampleRate,
+  //   'channel': 1,
+  //   'token': '24.6776a06d8bc535101fdbf75d06c49ab2.2592000.1494825798.282335-9523850',
+  //   'cuid': '4a:00:01:e3:5c:81',
+  //   'len': len,
+  //   'lan': 'zh',
+  //   'speech': blob
+  // }
+
   var data = {
-    'format': 'speex',
-    'rate': 8000,
+    'format': 'wav',
+    'rate': sampleRate,
     'channel': 1,
     'token': '24.6776a06d8bc535101fdbf75d06c49ab2.2592000.1494825798.282335-9523850',
-    'cuid': '4a:00:01:e3:5c:81',
-    'len': 4096,
-    'speech': 'xxx',
+    'cuid': '4a:00:01:e3:5c:81:2333',
+    'len': len,
+    'lan': 'zh',
+    'speech': blob
   }
+
+  var instance = axios.create({
+    baseURL: 'http://vop.baidu.com',
+    timeout: 2000,
+    headers: {
+     'Content-Type': 'application/json'
+    }
+  })
+
+  instance.post('/server_api', data)
+    .then((result) => {
+      console.log(result)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+
+  res.json({ success: true })
 })
 
 router.get('/token', (req, res, next) => {
