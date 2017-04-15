@@ -1,16 +1,16 @@
 <template>
   <div id="app">
-    <record></record>
+    <game></game>
   </div>
 </template>
 
 <script>
-import record from './components/record'
+import game from './components/game'
 
 export default {
   name: 'app',
   components: {
-    record
+    game
   }
 }
 </script>
