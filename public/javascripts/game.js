@@ -9,7 +9,6 @@ var PhaserGame = function (game) {
   this.safetile = 1
   this.gridsize = 32
 
-  //  base speed
   this.speed = 120
   this.threshold = 3
   this.turnSpeed = 150
@@ -198,6 +197,8 @@ PhaserGame.prototype = {
       this.setMark(this.buffPos[i].x, this.buffPos[i].y)
     }
     //  Un-comment this to see the debug drawing
+    // 可以走的方向
+    var avaiableDir = ''
     for (var t = 1; t < 5; t++) {
       if (this.directions[t] === null) {
         continue
@@ -206,7 +207,10 @@ PhaserGame.prototype = {
       var color = 'rgba(0,255,0,0.3)'
 
       if (this.directions[t].index !== this.safetile) {
-        // color = 'rgba(255,0,0,0.3)'
+
+        color = 'rgba(255,0,0,0.3)'
+      } else {
+        avaiableDir += t;
       }
 
       if (t === this.current) {
@@ -218,7 +222,12 @@ PhaserGame.prototype = {
       //   this.directions[t].worldY, 32, 32), color, true)
     }
 
-    // this.game.debug.geom(this.turnPoint, '#000000')
+
+    this.game.debug.geom(this.turnPoint, '#ffff00')
+
+    if (avaiableDir.length > 1 && avaiableDir !== '12' && avaiableDir !== '34') {
+      console.log('turn')
+    }
   }
 
 }
