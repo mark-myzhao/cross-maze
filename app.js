@@ -3,7 +3,7 @@ var path = require('path')
 var bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
 // var log4js = require('log4js')
-// const restc = require('restc')
+const restc = require('restc')
 
 var app = express()
 
@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
-// app.use(restc.express())
+app.use(restc.express())
 
 //  配置路由
 app.use('/', require('./routes/index'))
