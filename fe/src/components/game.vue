@@ -13,7 +13,7 @@ window.Phaser = require('phaser/build/custom/phaser-split')
 export default {
   name: 'game',
   created () {
-    var game = new Phaser.Game(640, 480, Phaser.CANVAS, 'game')
+    var game = new Phaser.Game(864, 672, Phaser.CANVAS, 'game')
 
     var PhaserGame = function (game) {
       //  config
@@ -37,15 +37,11 @@ export default {
       this.current = Phaser.UP
       this.turning = Phaser.NONE
 
-      this.crossPos = [
-
-      ]
-
       this.buffPos = [
-        { x: 1, y: 2 },
-        { x: 1, y: 3 },
-        { x: 1, y: 4 },
-        { x: 1, y: 5 }
+        // { x: 1, y: 2 },
+        // { x: 1, y: 3 },
+        // { x: 1, y: 4 },
+        // { x: 1, y: 5 }
       ]
     }
 
@@ -58,10 +54,9 @@ export default {
       preload: function () {
             //  We need this because the assets are on Amazon S3
             //  Remove the next 2 lines if running locally
-        this.load.tilemap('map', 'static/img/maze.json', null, Phaser.Tilemap.TILED_JSON)
+        this.load.tilemap('map', 'static/img/maze3.json', null, Phaser.Tilemap.TILED_JSON)
         this.load.image('tiles', 'static/img/tiles.png')
         this.load.image('car', 'static/img/car.png')
-            //  Note: Graphics are Copyright 2015 Photon Storm Ltd.
       },
 
       create: function () {
@@ -70,7 +65,8 @@ export default {
 
         this.layer = this.map.createLayer('Tile Layer 1')
 
-        this.map.setCollision(20, true, this.layer)
+        this.map.setCollision(6, true, this.layer)
+        this.map.setCollision(13, true, this.layer)
 
         this.car = this.add.sprite(48, 48, 'car')
         this.car.anchor.set(0.5)
@@ -124,6 +120,14 @@ export default {
         return true
       },
 
+      checkLoss: function () {
+
+      },
+
+      checkSuccess: function (x, y) {
+        return x === 25 && y === 19
+      },
+
       turn: function () {
         var cx = Math.floor(this.car.x)
         var cy = Math.floor(this.car.y)
@@ -164,6 +168,8 @@ export default {
         this.add.tween(this.car).to({ angle: this.getAngle(direction) }, this.turnSpeed, 'Linear', true)
 
         this.current = direction
+
+        this.checkLoss()
       },
 
       getAngle: function (to) {
@@ -184,11 +190,16 @@ export default {
 
       //  automatic invoke
       update: function () {
+        console.log(this.speed)
+        //  check success
         this.physics.arcade.collide(this.car, this.layer)
 
         this.marker.x = this.math.snapToFloor(Math.floor(this.car.x), this.gridsize) / this.gridsize
         this.marker.y = this.math.snapToFloor(Math.floor(this.car.y), this.gridsize) / this.gridsize
 
+        if (this.checkSuccess(this.marker.x, this.marker.y)) {
+          console.log('Success')
+        }
         //  Update our grid sensors
         this.directions[1] = this.map.getTileLeft(this.layer.index, this.marker.x, this.marker.y)
         this.directions[2] = this.map.getTileRight(this.layer.index, this.marker.x, this.marker.y)
@@ -208,6 +219,8 @@ export default {
       },
 
       render: function () {
+        this.setMark(25, 19)
+
         for (let i in this.buffPos) {
           this.setMark(this.buffPos[i].x, this.buffPos[i].y)
         }
@@ -237,11 +250,8 @@ export default {
           //   this.directions[t].worldY, 32, 32), color, true)
         }
 
-
-        this.game.debug.geom(this.turnPoint, '#ffff00')
-
         if (avaiableDir.length > 1 && avaiableDir !== '12' && avaiableDir !== '34') {
-          console.log('turn')
+          // console.log('turn')
         }
       }
 
@@ -252,7 +262,7 @@ export default {
   },
   data () {
     return {
-      
+
     }
   }
 }

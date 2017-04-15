@@ -22,9 +22,7 @@ var PhaserGame = function (game) {
   this.current = Phaser.UP
   this.turning = Phaser.NONE
 
-  this.crossPos = [
-
-  ]
+  this.nextDir = Phaser.NONE
 
   this.buffPos = [
     { x: 1, y: 2 },
@@ -55,6 +53,7 @@ PhaserGame.prototype = {
 
     this.layer = this.map.createLayer('Tile Layer 1')
 
+    //  set solid wall
     this.map.setCollision(20, true, this.layer)
 
     this.car = this.add.sprite(48, 48, 'car')
@@ -106,7 +105,16 @@ PhaserGame.prototype = {
 
   checkSpeech: function () {
     //  use speech test here
+    //  set this.nextDir
+
     return true
+  },
+
+  checkLoss: function () {
+    if (this.directions[this.current] === null || this.directions[this.current].index !== this.safetile) {
+      console.log('You Lose')
+      return
+    }
   },
 
   turn: function () {
@@ -145,6 +153,8 @@ PhaserGame.prototype = {
     } else {
       this.car.body.velocity.y = speed
     }
+
+    this.checkLoss()
 
     this.add.tween(this.car).to({ angle: this.getAngle(direction) }, this.turnSpeed, 'Linear', true)
 
@@ -222,8 +232,7 @@ PhaserGame.prototype = {
       //   this.directions[t].worldY, 32, 32), color, true)
     }
 
-
-    this.game.debug.geom(this.turnPoint, '#ffff00')
+    // this.game.debug.geom(this.turnPoint, '#ffff00')
 
     if (avaiableDir.length > 1 && avaiableDir !== '12' && avaiableDir !== '34') {
       console.log('turn')
