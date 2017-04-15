@@ -9,7 +9,8 @@ var PhaserGame = function (game) {
   this.safetile = 1
   this.gridsize = 32
 
-  this.speed = 150
+  //  base speed
+  this.speed = 120
   this.threshold = 3
   this.turnSpeed = 150
 
@@ -21,6 +22,17 @@ var PhaserGame = function (game) {
 
   this.current = Phaser.UP
   this.turning = Phaser.NONE
+
+  this.crossPos = [
+
+  ]
+
+  this.buffPos = [
+    { x: 1, y: 2 },
+    { x: 1, y: 3 },
+    { x: 1, y: 4 },
+    { x: 1, y: 5 }
+  ]
 }
 
 PhaserGame.prototype = {
@@ -32,13 +44,9 @@ PhaserGame.prototype = {
   preload: function () {
         //  We need this because the assets are on Amazon S3
         //  Remove the next 2 lines if running locally
-    // this.load.baseURL = 'http://files.phaser.io.s3.amazonaws.com/codingtips/issue005/'
-    // this.load.crossOrigin = 'anonymous'
-
     this.load.tilemap('map', 'assets/maze.json', null, Phaser.Tilemap.TILED_JSON)
     this.load.image('tiles', 'assets/tiles.png')
     this.load.image('car', 'assets/car.png')
-
         //  Note: Graphics are Copyright 2015 Photon Storm Ltd.
   },
 
@@ -60,7 +68,10 @@ PhaserGame.prototype = {
     this.move(Phaser.DOWN)
   },
 
+  //  check input
   checkKeys: function () {
+    var result = this.checkSpeech()
+
     if (this.cursors.left.isDown && this.current !== Phaser.LEFT) {
       this.checkDirection(Phaser.LEFT)
     } else if (this.cursors.right.isDown && this.current !== Phaser.RIGHT) {
@@ -70,7 +81,7 @@ PhaserGame.prototype = {
     } else if (this.cursors.down.isDown && this.current !== Phaser.DOWN) {
       this.checkDirection(Phaser.DOWN)
     } else {
-            //  This forces them to hold the key down to turn the corner
+      //  This forces them to hold the key down to turn the corner
       this.turning = Phaser.NONE
     }
   },
@@ -83,7 +94,7 @@ PhaserGame.prototype = {
       return
     }
 
-        //  Check if they want to turn around and can
+    //  Check if they want to turn around and can
     if (this.current === this.opposites[turnTo]) {
       this.move(turnTo)
     } else {
@@ -94,12 +105,18 @@ PhaserGame.prototype = {
     }
   },
 
+  checkSpeech: function () {
+    //  use speech test here
+    return true
+  },
+
   turn: function () {
     var cx = Math.floor(this.car.x)
     var cy = Math.floor(this.car.y)
 
-        //  This needs a threshold, because at high speeds you can't turn because the coordinates skip past
-    if (!this.math.fuzzyEqual(cx, this.turnPoint.x, this.threshold) || !this.math.fuzzyEqual(cy, this.turnPoint.y, this.threshold)) {
+    //  This needs a threshold, because at high speeds you can't turn because the coordinates skip past
+    if (!this.math.fuzzyEqual(cx, this.turnPoint.x, this.threshold) ||
+        !this.math.fuzzyEqual(cy, this.turnPoint.y, this.threshold)) {
       return false
     }
 
@@ -116,6 +133,8 @@ PhaserGame.prototype = {
   },
 
   move: function (direction) {
+    //  gerenally speed up
+    if (this.speed < 350) this.speed += 2
     var speed = this.speed
 
     if (direction === Phaser.LEFT || direction === Phaser.UP) {
@@ -134,28 +153,29 @@ PhaserGame.prototype = {
   },
 
   getAngle: function (to) {
-        //  About-face?
+    //  About-face?
     if (this.current === this.opposites[to]) {
       return '180'
     }
 
     if ((this.current === Phaser.UP && to === Phaser.LEFT) ||
-            (this.current === Phaser.DOWN && to === Phaser.RIGHT) ||
-            (this.current === Phaser.LEFT && to === Phaser.DOWN) ||
-            (this.current === Phaser.RIGHT && to === Phaser.UP)) {
+        (this.current === Phaser.DOWN && to === Phaser.RIGHT) ||
+        (this.current === Phaser.LEFT && to === Phaser.DOWN) ||
+        (this.current === Phaser.RIGHT && to === Phaser.UP)) {
       return '-90'
     }
 
     return '90'
   },
 
+  //  automatic invoke
   update: function () {
     this.physics.arcade.collide(this.car, this.layer)
 
     this.marker.x = this.math.snapToFloor(Math.floor(this.car.x), this.gridsize) / this.gridsize
     this.marker.y = this.math.snapToFloor(Math.floor(this.car.y), this.gridsize) / this.gridsize
 
-        //  Update our grid sensors
+    //  Update our grid sensors
     this.directions[1] = this.map.getTileLeft(this.layer.index, this.marker.x, this.marker.y)
     this.directions[2] = this.map.getTileRight(this.layer.index, this.marker.x, this.marker.y)
     this.directions[3] = this.map.getTileAbove(this.layer.index, this.marker.x, this.marker.y)
@@ -168,9 +188,16 @@ PhaserGame.prototype = {
     }
   },
 
-  render: function () {
-        //  Un-comment this to see the debug drawing
+  setMark: function(x, y) {
+    this.game.debug.geom(new Phaser.Rectangle(
+      x * this.gridsize, y * this.gridsize, 32, 32), 'rgba(0,255,0,0.3)', true)
+  },
 
+  render: function () {
+    for (let i in this.buffPos) {
+      this.setMark(this.buffPos[i].x, this.buffPos[i].y)
+    }
+    //  Un-comment this to see the debug drawing
     for (var t = 1; t < 5; t++) {
       if (this.directions[t] === null) {
         continue
@@ -179,17 +206,19 @@ PhaserGame.prototype = {
       var color = 'rgba(0,255,0,0.3)'
 
       if (this.directions[t].index !== this.safetile) {
-        color = 'rgba(255,0,0,0.3)'
+        // color = 'rgba(255,0,0,0.3)'
       }
 
       if (t === this.current) {
-        color = 'rgba(255,255,255,0.3)'
+        // color = 'rgba(255,255,255,0.3)'
       }
 
-      this.game.debug.geom(new Phaser.Rectangle(this.directions[t].worldX, this.directions[t].worldY, 32, 32), color, true)
+      // this.game.debug.geom(new Phaser.Rectangle(
+      //   this.directions[t].worldX,
+      //   this.directions[t].worldY, 32, 32), color, true)
     }
 
-    this.game.debug.geom(this.turnPoint, '#ffff00')
+    // this.game.debug.geom(this.turnPoint, '#000000')
   }
 
 }
