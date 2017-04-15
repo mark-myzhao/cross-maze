@@ -15,32 +15,18 @@ router.get('/test1', (req, res, next) => {
   res.sendFile('test1/record.html')
 })
 
-router.post('/speech', (req, res, next) => {
-  // res.set('Content-Type', 'application/json')
+router.post('/api/speech', (req, res, next) => {
 
-  let { blob, len, sampleRate } = req.body
-  // console.log('--------------------------')
   // var data = {
   //   'format': 'wav',
   //   'rate': sampleRate,
   //   'channel': 1,
   //   'token': '24.6776a06d8bc535101fdbf75d06c49ab2.2592000.1494825798.282335-9523850',
-  //   'cuid': '4a:00:01:e3:5c:81',
+  //   'cuid': '4a:00:01:e3:5c:81:2333',
   //   'len': len,
   //   'lan': 'zh',
   //   'speech': blob
   // }
-
-  var data = {
-    'format': 'wav',
-    'rate': sampleRate,
-    'channel': 1,
-    'token': '24.6776a06d8bc535101fdbf75d06c49ab2.2592000.1494825798.282335-9523850',
-    'cuid': '4a:00:01:e3:5c:81:2333',
-    'len': len,
-    'lan': 'zh',
-    'speech': blob
-  }
 
   var instance = axios.create({
     baseURL: 'http://vop.baidu.com',
@@ -50,15 +36,14 @@ router.post('/speech', (req, res, next) => {
     }
   })
 
-  instance.post('/server_api', data)
+  instance.post('/server_api', req.body)
     .then((result) => {
-      console.log(result)
+      res.json({res: result.data})
     })
     .catch((err) => {
       console.log(err)
+      res.status = 400
     })
-
-  res.json({ success: true })
 })
 
 router.get('/token', (req, res, next) => {

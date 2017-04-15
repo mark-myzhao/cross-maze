@@ -9,7 +9,7 @@ var PhaserGame = function (game) {
   this.safetile = 1
   this.gridsize = 32
 
-  this.speed = 150
+  this.speed = 50
   this.threshold = 3
   this.turnSpeed = 150
 
@@ -83,7 +83,7 @@ PhaserGame.prototype = {
       return
     }
 
-        //  Check if they want to turn around and can
+    //  Check if they want to turn around and can
     if (this.current === this.opposites[turnTo]) {
       this.move(turnTo)
     } else {
@@ -98,7 +98,7 @@ PhaserGame.prototype = {
     var cx = Math.floor(this.car.x)
     var cy = Math.floor(this.car.y)
 
-        //  This needs a threshold, because at high speeds you can't turn because the coordinates skip past
+    //  This needs a threshold, because at high speeds you can't turn because the coordinates skip past
     if (!this.math.fuzzyEqual(cx, this.turnPoint.x, this.threshold) || !this.math.fuzzyEqual(cy, this.turnPoint.y, this.threshold)) {
       return false
     }
@@ -155,7 +155,7 @@ PhaserGame.prototype = {
     this.marker.x = this.math.snapToFloor(Math.floor(this.car.x), this.gridsize) / this.gridsize
     this.marker.y = this.math.snapToFloor(Math.floor(this.car.y), this.gridsize) / this.gridsize
 
-        //  Update our grid sensors
+    //  Update our grid sensors
     this.directions[1] = this.map.getTileLeft(this.layer.index, this.marker.x, this.marker.y)
     this.directions[2] = this.map.getTileRight(this.layer.index, this.marker.x, this.marker.y)
     this.directions[3] = this.map.getTileAbove(this.layer.index, this.marker.x, this.marker.y)
@@ -171,6 +171,8 @@ PhaserGame.prototype = {
   render: function () {
         //  Un-comment this to see the debug drawing
 
+    // 可以走的方向
+    var avaiableDir = ''
     for (var t = 1; t < 5; t++) {
       if (this.directions[t] === null) {
         continue
@@ -180,6 +182,8 @@ PhaserGame.prototype = {
 
       if (this.directions[t].index !== this.safetile) {
         color = 'rgba(255,0,0,0.3)'
+      } else {
+        avaiableDir += t;
       }
 
       if (t === this.current) {
@@ -190,6 +194,10 @@ PhaserGame.prototype = {
     }
 
     this.game.debug.geom(this.turnPoint, '#ffff00')
+
+    if (avaiableDir.length > 1 && avaiableDir !== '12' && avaiableDir !== '34') {
+      console.log('turn')
+    }
   }
 
 }
