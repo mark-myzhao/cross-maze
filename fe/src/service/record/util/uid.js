@@ -1,6 +1,7 @@
 /**
  * @file uid
  * @author treelite(c.xinle@gmail.com)
+ * @author zhuangqh(zhuangqhc@gmail.com)
  */
 
 'use strict';

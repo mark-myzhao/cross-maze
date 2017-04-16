@@ -7,10 +7,6 @@ var cookieParser = require('cookie-parser')
 
 var app = express()
 
-//  使用pug作为模板引擎
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'pug')
-
 //  设置链接端口
 app.set('port', process.env.PORT || 3000)
 

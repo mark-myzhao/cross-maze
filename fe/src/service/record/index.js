@@ -1,6 +1,7 @@
 /**
  * @file Main
  * @author treelite(c.xinle@gmail.com)
+ * @author zhuangqhc@gmail.com
  */
 
 'use strict';
@@ -64,7 +65,7 @@ function gather(e) {
 function createVoice(options = {}) {
     // 当前音频的采样率
     options.sampleRate = ctx.sampleRate;
-    options.token = config.token;
+    //options.token = config.token;
     options.url = config.url;
     let voice = new Voice(options);
     voiceList.add(voice);
@@ -81,7 +82,7 @@ function createVoice(options = {}) {
  * @return {Promise}
  */
 export function authorize(options) {
-    config.token = options.token;
+    // config.token = options.token;
     config.url = options.url;
     if (!authorization) {
         authorization = new Promise((resolve, reject) => {

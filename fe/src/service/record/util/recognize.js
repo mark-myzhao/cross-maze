@@ -1,6 +1,7 @@
 /**
  * @file 语音识别
  * @author treelite(c.xinle@gmail.com)
+ * @author zhuangqh(zhuangqhc@gmail.com)
  */
 
 import uid from './uid';
@@ -127,7 +128,7 @@ export default function (data, options = {}) {
         rate: outputSampleRate,
         channel: 1,
         cuid: UID,
-        token: options.token,
+        // token: options.token,
         lan: options.lang || DEFAULT_LANG,
         len: bytes.length,
         speech: data
