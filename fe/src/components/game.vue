@@ -97,6 +97,9 @@ export default {
         checkKeys: function () {
           var result = this.checkSpeech()
 
+          if (result) {
+
+          }
           // if (true) {
           //   this.checkDirection(Phaser.RIGHT)
           //   // console.log(this.lastX + ' ' + this.lastY);
@@ -141,16 +144,16 @@ export default {
 
         isRecordArea: function () {
           // console.log(this.car.x)
-          for (let i in this.buffPos[this.currentHighlight]) {
-            if (this.buffPos[this.currentHighlight][i].x * this.gridsize + 16 === parseInt(this.car.x)) {
-              if (this.car.y >= this.buffPos[this.currentHighlight][i].y * this.gridsize &&
-              this.car.y <= this.buffPos[this.currentHighlight][i].y * this.gridsize + 32) {
+          for (let i in this.buffPos) {
+            if (this.buffPos[i].x * this.gridsize + 16 === parseInt(this.car.x)) {
+              if (this.car.y >= this.buffPos[i].y * this.gridsize &&
+              this.car.y <= this.buffPos[i].y * this.gridsize + 32) {
                 return true
               }
             }
-            if (this.buffPos[this.currentHighlight][i].y * this.gridsize + 16 === parseInt(this.car.y)) {
-              if (this.car.x >= this.buffPos[this.currentHighlight][i].x * this.gridsize &&
-              this.car.x <= this.buffPos[this.currentHighlight][i].x * this.gridsize + 32) {
+            if (this.buffPos[i].y * this.gridsize + 16 === parseInt(this.car.y)) {
+              if (this.car.x >= this.buffPos[i].x * this.gridsize &&
+              this.car.x <= this.buffPos[i].x * this.gridsize + 32) {
                 return true
               }
             }
@@ -209,7 +212,6 @@ export default {
           this.move(this.turning)
 
           this.turning = Phaser.NONE
-
 
           return true
         },
@@ -294,10 +296,10 @@ export default {
         render: function () {
           this.setMark(25, 19)
 
-          for (let i in this.buffPos[this.currentHighlight]) {
+          for (let i in this.buffPos) {
             this.setMark(
-            this.buffPos[this.currentHighlight][i].x,
-            this.buffPos[this.currentHighlight][i].y)
+            this.buffPos[i].x,
+            this.buffPos[i].y)
           }
           //  Un-comment this to see the debug drawing
           // 可以走的方向
