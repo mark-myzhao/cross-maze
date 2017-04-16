@@ -23,6 +23,7 @@ window.Phaser = require('phaser/build/custom/phaser-split')
 export default {
   name: 'game',
   created () {
+    let that = this
     let ready = () => {
 
       var game = new Phaser.Game(864, 672, Phaser.CANVAS, 'game')
@@ -151,12 +152,14 @@ export default {
             if (this.buffPos[i].x * this.gridsize + 16 === parseInt(this.car.x)) {
               if (this.car.y >= this.buffPos[i].y * this.gridsize &&
               this.car.y <= this.buffPos[i].y * this.gridsize + 32) {
+                that.controlBar = this.buffPos[i].data.words
                 return true
               }
             }
             if (this.buffPos[i].y * this.gridsize + 16 === parseInt(this.car.y)) {
               if (this.car.x >= this.buffPos[i].x * this.gridsize &&
               this.car.x <= this.buffPos[i].x * this.gridsize + 32) {
+                that.controlBar = this.buffPos[i].data.words
                 return true
               }
             }
@@ -298,7 +301,7 @@ export default {
           //  check lose
           if (this.car.x === this.lastX && this.car.y === this.lastY) {
             if (this.counter++ > 25) {
-              // console.log('You lose')
+              console.log('You lose')
             }
           }
 
@@ -396,6 +399,9 @@ export default {
         'right'
       ]
     }
+  },
+  methods: {
+
   }
 }
 </script>
@@ -415,7 +421,7 @@ export default {
 #speech-bar {
   width: 210px;
   height: 210px;
-  // background-color: black;
+  /*background-color: black;*/
   position: fixed;
   top: 100px;
   right: 200px;
@@ -425,7 +431,7 @@ export default {
 .bar {
   width: 70px;
   height: 70px;
-  // background-color: white;
+  /*background-color: white;*/
   background-image: url("/static/img/bar.png");
   background-size: 100% 50%;
   background-repeat: no-repeat;
