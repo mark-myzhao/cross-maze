@@ -326,7 +326,6 @@ export default {
 
     basr
       .authorize({
-        token: '24.6776a06d8bc535101fdbf75d06c49ab2.2592000.1494825798.282335-9523850',
           url: '/api/speech'
         })
       .then(ready)

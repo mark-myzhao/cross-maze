@@ -7,16 +7,18 @@ router.get('/', (req, res, next) => {
   res.render('main', { title: "cross-maze" })
 })
 
-router.get('/test', (req, res, next) => {
-  res.sendFile('test/index.html')
-})
-
-router.get('/test1', (req, res, next) => {
-  res.sendFile('test1/record.html')
-})
-
+/**
+ * 用语音数据、参数、API token 获取语音识别结果
+ *
+ * @param {Object} req 请求
+ * @param {Object} res 响应
+ * @param {Object} next 下一个中间件
+ * @param {Function} resolve Promise resolve
+ * @param {Function} reject Promise reject
+ */
 router.post('/api/speech', (req, res, next) => {
 
+  // 数据格式
   // var data = {
   //   'format': 'wav',
   //   'rate': sampleRate,
@@ -24,13 +26,16 @@ router.post('/api/speech', (req, res, next) => {
   //   'token': '24.6776a06d8bc535101fdbf75d06c49ab2.2592000.1494825798.282335-9523850',
   //   'cuid': '4a:00:01:e3:5c:81:2333',
   //   'len': len,
-  //   'lan': 'zh',
+  //   'lan': 'ct',
   //   'speech': blob
   // }
 
+  // 将token保存服务端，保证安全性
+  req.body.token = '24.6776a06d8bc535101fdbf75d06c49ab2.2592000.1494825798.282335-9523850'
+
   var instance = axios.create({
     baseURL: 'http://vop.baidu.com',
-    timeout: 2000,
+    timeout: 10000, // 10s
     headers: {
      'Content-Type': 'application/json'
     }
@@ -42,10 +47,19 @@ router.post('/api/speech', (req, res, next) => {
     })
     .catch((err) => {
       console.log(err)
-      res.status = 400
+      res.status = 404
     })
 })
 
+/**
+ * 从百度服务器获取API token，有效期1个月
+ *
+ * @param {Object} req 请求
+ * @param {Object} res 响应
+ * @param {Object} next 下一个中间件
+ * @param {Function} resolve Promise resolve
+ * @param {Function} reject Promise reject
+ */
 router.get('/token', (req, res, next) => {
   const grantType = 'client_credentials'
   const apiKey = 'UIEotfbBYbzNAqUOSw13SuLe'
@@ -54,10 +68,9 @@ router.get('/token', (req, res, next) => {
   url += `grant_type=${grantType}`
   url += `&client_id=${apiKey}`
   url += `&client_secret=${secretKey}`
-  console.log(url)
+
   axios.get(url)
   .then((result) => {
-    console.log(result)
     res.json({ res: result.data.access_token })
   })
   .catch((err) => {
