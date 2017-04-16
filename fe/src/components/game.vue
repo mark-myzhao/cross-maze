@@ -1,6 +1,12 @@
 <template>
   <div class="hello">
     <div id="game"></div>
+    <div id="speech-bar">
+      <div class="bar" id="up">{{controlBar[0]}}</div>
+      <div class="bar" id="down">{{controlBar[1]}}</div>
+      <div class="bar" id="left">{{controlBar[2]}}</div>
+      <div class="bar" id="right">{{controlBar[3]}}</div>
+    </div>
   </div>
 </template>
 
@@ -193,6 +199,7 @@ export default {
 
           this.turning = Phaser.NONE
 
+
           return true
         },
 
@@ -330,7 +337,12 @@ export default {
   },
   data () {
     return {
-
+      controlBar: [
+        'up',
+        'down',
+        'left',
+        'right'
+      ]
     }
   }
 }
@@ -338,6 +350,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
 #background {
   background-color: #E0E4F1;
 }
@@ -347,4 +360,45 @@ export default {
   box-shadow: 5px;
 }
 
+#speech-bar {
+  width: 210px;
+  height: 210px;
+  // background-color: black;
+  position: fixed;
+  top: 100px;
+  right: 200px;
+  float: right;
+}
+
+.bar {
+  width: 70px;
+  height: 70px;
+  // background-color: white;
+  background-image: url("/static/img/bar.png");
+  background-size: 100% 50%;
+  background-repeat: no-repeat;
+  background-position:center center;
+  color: white;
+  position: absolute;
+  text-align: center;
+  line-height: 70px;
+}
+
+#up {
+  left: 70px;
+}
+
+#down {
+  left: 70px;
+  bottom: 0px;
+}
+
+#left {
+  top: 70px;
+}
+
+#right {
+  right: 0px;
+  top: 70px;
+}
 </style>
