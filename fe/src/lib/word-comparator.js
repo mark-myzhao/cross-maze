@@ -1,7 +1,7 @@
 export default {
   compare (target, sourceArr) {
-    for (let i in sourceArr) {
-      if (sourceArr[i] === target) {
+    for (let str of sourceArr) {
+      if (str.indexOf(target) !== -1) {
         return true
       }
     }

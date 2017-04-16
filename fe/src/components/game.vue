@@ -176,6 +176,7 @@ export default {
               .result()
               .then(
                 function (res) {
+                  console.log(res)
                   console.log('Result: ' + wc.compare('你好', res))
                 },
                 function (error) {
