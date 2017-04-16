@@ -40,6 +40,9 @@ export default {
         this.threshold = 3
         this.turnSpeed = 150
 
+        this.isTurn = false
+        this.isGo = true
+
         this.marker = new Phaser.Point()
         this.turnPoint = new Phaser.Point()
 
@@ -160,6 +163,25 @@ export default {
           }
           return false
         },
+        
+        isTurnArea: function () {
+          // console.log(this.car.x)
+          for (let i in this.turnPos) {
+            if (this.turnPos[i].x * this.gridsize + 16 === parseInt(this.car.x)) {
+              if (this.car.y >= this.turnPos[i].y * this.gridsize &&
+              this.car.y <= this.turnPos[i].y * this.gridsize + 32) {
+                return true
+              }
+            }
+            if (this.turnPos[i].y * this.gridsize + 16 === parseInt(this.car.y)) {
+              if (this.car.x >= this.turnPos[i].x * this.gridsize &&
+              this.car.x <= this.turnPos[i].x * this.gridsize + 32) {
+                return true
+              }
+            }
+          }
+          return false
+        },
 
         checkSpeech: function () {
           //  use speech test here
@@ -175,12 +197,19 @@ export default {
               .end()
               .result()
               .then(
-                function (res) {
+                (res) => {
                   console.log(res)
+                  const ans = wc.compare('你好', res)
                   console.log('Result: ' + wc.compare('你好', res))
+                  if (ans) {
+                    this.isGo = true;
+                  } else {
+                    this.isGo = false;
+                  }
                 },
-                function (error) {
+                (error) => {
                   console.error('Error: ' + JSON.stringify(error))
+                  alert('kkk')
                 }
               )
               ++this.currentHighlight
@@ -218,6 +247,7 @@ export default {
         },
 
         move: function (direction) {
+
           //  gerenally speed up
           if (this.speed < 350) this.speed += 2
           var speed = this.speed
@@ -233,7 +263,7 @@ export default {
           }
 
           this.add.tween(this.car).to({ angle: this.getAngle(direction) }, this.turnSpeed, 'Linear', true)
-
+          
           this.current = direction
         },
 
@@ -255,6 +285,16 @@ export default {
 
         //  automatic invoke
         update: function () {
+
+          if (this.isGo) {
+            this.speed = 70;
+            this.car.body.velocity
+            this.car.body.velocity
+          } else {
+            this.speed = 0;
+            this.car.body.velocity.x = 2
+            this.car.body.velocity.y = 2
+          }
           //  check lose
           if (this.car.x === this.lastX && this.car.y === this.lastY) {
             if (this.counter++ > 25) {
