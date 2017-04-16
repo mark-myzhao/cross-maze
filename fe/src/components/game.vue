@@ -12,7 +12,9 @@
 
 <script>
 import * as basr from '../service/record'
-import sd from '../static-data.js'
+import mp from '../lib/marked-position.js'
+import sentences from '../lib/sentences.js'
+import wc from '../lib/word-comparator.js'
 
 window.PIXI = require('phaser/build/custom/pixi')
 window.p2 = require('phaser/build/custom/p2')
@@ -47,7 +49,7 @@ export default {
         this.current = Phaser.UP
         this.turning = Phaser.NONE
 
-        this.buffPos = sd.buffPos
+        this.buffPos = mp.buffPos
         this.currentHighlight = 0
 
         this.lastX = 0
@@ -94,6 +96,15 @@ export default {
         //  check input
         checkKeys: function () {
           var result = this.checkSpeech()
+
+          // if (true) {
+          //   this.checkDirection(Phaser.RIGHT)
+          //   // console.log(this.lastX + ' ' + this.lastY);
+          //   if (this.car.x === this.lastX && this.car.y === this.lastY) {
+          //     this.checkDirection(Phaser.DOWN)
+          //   }
+          //   return
+          // }
 
           if (this.cursors.left.isDown && this.current !== Phaser.LEFT) {
             this.checkDirection(Phaser.LEFT)
@@ -161,12 +172,12 @@ export default {
               .end()
               .result()
               .then(
-              function (res) {
-                console.log('Result: ' + res)
-              },
-              function (error) {
-                console.error('Error: ' + JSON.stringify(error))
-              }
+                function (res) {
+                  console.log('Result: ' + wc.compare('你好', res))
+                },
+                function (error) {
+                  console.error('Error: ' + JSON.stringify(error))
+                }
               )
               ++this.currentHighlight
             }
@@ -318,7 +329,6 @@ export default {
             // console.log('turn')
           }
         }
-
       }
 
       game.state.add('Game', PhaserGame, true)
